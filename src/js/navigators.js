@@ -8,44 +8,21 @@ $(document).ready(function(){
 
     $('.item').hide();
 
-    if (attr === 'all'){
-      $('.item').show();
-    } else if (attr === 'bg'){
-      $('.background').show();
-    } else if (attr === 'wr'){
-      $('.wreath').show();
-    } else if (attr === 'pt'){
-      $('.pattern').show();
-    } else if (attr === 'em'){
-      $('.emblem').show();
-    } else if (attr === 'ht'){
-      $('.hat').show();
-    };
+    paginate(attr);
   });
 
-  $('.col-2-btn').click(function(){
-    $('.col-2-btn').removeClass('active');
-    $(this).addClass('active');
+  $(document).on('click',  '.pagination-button', function(){
+    const pagenumber = $(this).attr('page-no');
+    var activetype = $('.nav-btn.active').attr('data-li');
+    var currentPage = $('.pagination-button.active').attr('page-no');
 
-    const attr = $(this).attr('data-li');
-
-    $('.command').hide();
-    $(`.${attr}`).show();
-  });
-
-  $('.checkbox-expand').click(function(){
-    if ($('.checkbox-expand').is(':checked')){
-      $('.command-details').slideDown(300);
+    if ($(this).hasClass('active')){
+      return;
     } else {
-      $('.command-details').slideUp(300);
-    }
-  })
-
-  // Use event delegation for appended contents
-  $(document).on('click',  '.command', function(){
-    const attr = $(this).attr('name');
-    $(`.clock-for-${attr}`).toggle(300);
-    $(`.${attr}-1`).slideToggle(300);
+      $('.pagination-button').removeClass('active');
+      $(this).addClass('active');
+      paginate(activetype, pagenumber, currentPage);
+    };
   });
 
   $('.gear-icon').click(function(){
@@ -95,14 +72,89 @@ $(document).ready(function(){
       }).appendTo('.items');
     }
   })
-
-
-// REmove command category if certain width is reached
- $(window).resize(function() {
-   if ($(this).width() < 700) {
-     $('.content-commands-column-2-left').hide('slow');
-   } else {
-     $('.content-commands-column-2-left').show('slow');
-   }
- });
 });
+
+function paginate(type, action, currentPage){
+
+  if (type === 'all'){
+    type = undefined;
+  };
+
+  const items = $(`.item${type?'.'+type:''}`);
+  const itemlength = items.length;
+  const itemsperpage = 16;
+  const totalpages = Math.ceil(itemlength / itemsperpage);
+
+    // create page chunks
+    const pagechunks = [[]];
+    let pagechunkindex = 0;
+
+    items.each(function(){
+      if (pagechunks[pagechunkindex].length >= itemsperpage){
+        pagechunks.push([]);
+        pagechunkindex++;
+      };
+      pagechunks[pagechunkindex].push(this);
+    })
+
+    //  Get the current page chunk
+    var currentPagechunk = currentPage - 1;
+    var expectedPagechunk;
+
+    // Hide all elements
+    $('.item').hide();
+
+    if (!action){
+      expectedPagechunk = 0;
+      $.each(pagechunks[expectedPagechunk], function(_, item){
+        $(item).show();
+      });
+    } else if (!action || action === 'next'){
+      expectedPagechunk = pagechunks[currentPagechunk+1] ? currentPagechunk+1 : 0
+      $.each(pagechunks[expectedPagechunk] || pagechunks[0], function(_, item){
+        $(item).show();
+      });
+    } else if (action === 'prev'){
+      expectedPagechunk = pagechunks[currentPagechunk-1] ? currentPagechunk-1 : pagechunks.length - 1;
+      $.each(pagechunks[expectedPagechunk] || pagechunks[expectedPagechunk], function(_, item){
+        $(item).show();
+      });
+    } else if (!isNaN(action)){
+      expectedPagechunk = Number(action) - 1;
+      $.each(pagechunks[expectedPagechunk], function(_, item){
+        $(item).show();
+      });
+    };
+
+
+    // Register to paginator
+    const contentpagenums = [];
+
+    $.each(pagechunks, function(index){
+      if (expectedPagechunk === index){
+        contentpagenums.push(`<li class="pagination-button active" page-no="${index+1}">${index+1}</li>`);
+      } else {
+        contentpagenums.push(`<li class="pagination-button" page-no="${index+1}">${index + 1}</li>`)
+      }
+    });
+
+    const newContent =
+    `<ul class="pageinfo">
+         <li class="pagination-button" page-no="prev"> << </li>
+         ${contentpagenums.join('').replace(/\.{1,}/g,'<li class="dots">...</li>')}
+         <li class="pagination-button" page-no="next"> >> </li>
+     </ul>
+    `;
+
+    const paginator = $('.paginator');
+    paginator.empty();
+    paginator.append(newContent);
+
+    $('body,html').animate({scrollTop:$('.main').offset().top},500)
+
+    // Return the current page number and  the total page number
+    return {
+      currentPage: currentPagechunk + 1,
+      totalPage: pagechunks.length
+    };
+  };

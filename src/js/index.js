@@ -29,5 +29,93 @@ $(function(){
         </article>
       `)
     });
+
+    // type is which type to show, action could be none, next, prev, or a page number
+    function paginate(type, action, currentPage){
+
+      if (type === 'all'){
+        type = undefined;
+      };
+
+      const items = $(`.item${type?'.'+type:''}`);
+      const itemlength = items.length;
+      const itemsperpage = 16;
+      const totalpages = Math.ceil(itemlength / itemsperpage);
+
+        // create page chunks
+        const pagechunks = [[]];
+        let pagechunkindex = 0;
+
+        items.each(function(){
+          if (pagechunks[pagechunkindex].length >= itemsperpage){
+            pagechunks.push([]);
+            pagechunkindex++;
+          };
+          pagechunks[pagechunkindex].push(this);
+        })
+
+        //  Get the current page chunk
+        var currentPagechunk = currentPage - 1;
+        var expectedPagechunk;
+
+        // Hide all elements
+        $('.item').hide();
+
+        if (!action){
+          expectedPagechunk = 0;
+          $.each(pagechunks[expectedPagechunk], function(_, item){
+            $(item).show();
+          });
+        } else if (!action || action === 'next'){
+          expectedPagechunk = pagechunks[currentPagechunk+1] ? currentPagechunk+1 : 0
+          $.each(pagechunks[expectedPagechunk] || pagechunks[0], function(_, item){
+            $(item).show();
+          });
+        } else if (action === 'prev'){
+          expectedPagechunk = pagechunks[currentPagechunk-1] ? currentPagechunk-1 : pagechunks.length - 1;
+          $.each(pagechunks[expectedPagechunk] || pagechunks[expectedPagechunk], function(_, item){
+            $(item).show();
+          });
+        } else if (!isNaN(action)){
+          expectedPagechunk = Number(action) - 1;
+          $.each(pagechunks[expectedPagechunk], function(_, item){
+            $(item).show();
+          });
+        };
+
+
+        // Register to paginator
+        const contentpagenums = [];
+
+        $.each(pagechunks, function(index){
+          if (expectedPagechunk === index){
+            contentpagenums.push(`<li class="pagination-button active" page-no="${index+1}">${index+1}</li>`);
+          } else {
+            contentpagenums.push(`<li class="pagination-button" page-no="${index+1}">${index + 1}</li>`)
+          }
+        });
+
+        const newContent =
+        `<ul class="pageinfo">
+             <li class="pagination-button" page-no="prev"> << </li>
+             ${contentpagenums.join('').replace(/\.{1,}/g,'<li class="dots">...</li>')}
+             <li class="pagination-button" page-no="next"> >> </li>
+         </ul>
+        `;
+
+        const paginator = $('.paginator');
+        paginator.empty();
+        paginator.append(newContent);
+
+        $('body,html').animate({scrollTop:$('.main').offset().top},500)
+
+        // Return the current page number and  the total page number
+        return {
+          currentPage: currentPagechunk + 1,
+          totalPage: pagechunks.length
+        };
+      };
+
+    paginate();
   });
 });

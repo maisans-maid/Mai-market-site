@@ -31,7 +31,7 @@
 
 .items {
   display: inline-flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   position: relative;
   justify-content: center;
 }
@@ -261,5 +261,35 @@ img{
 
 .market-menu ul li:hover{
   cursor: pointer;
+  background-color: hotpink;
+}
+
+.paginator{
+  margin: auto;
+}
+
+.paginator ul{
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  background-color: #272928;
+}
+
+.paginator ul li{
+  cursor: pointer;
+  margin: 5px;
+  padding: 10px;
+  text-align: center;
+}
+
+.pagination-button.active,
+.pagination-button:hover{
+  color: hotpink;
+}
+
+.borderline {
+  display: block;
+  height: 10px;
+  width: 100%;
   background-color: hotpink;
 }
