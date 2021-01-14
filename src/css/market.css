@@ -29,8 +29,14 @@
   transition: 0.5s;
 }
 
+.item-container {
+  display: block;
+  margin: auto;
+  max-width: 1440px;
+}
+
 .items {
-  display: inline-flex;
+  display: flex;
   flex-flow: row wrap;
   position: relative;
   justify-content: center;
@@ -49,6 +55,14 @@
   box-shadow: 5px 5px 15px rgba(0,0,0,0.2);
 
   font-family: 'Sofia'
+}
+
+.empty-child {
+  height: auto;
+  width: 300px;
+  min-width: 250px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .item:hover{

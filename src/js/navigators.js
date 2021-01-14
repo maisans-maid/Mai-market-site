@@ -1,5 +1,6 @@
 $(document).ready(function(){
   $(".nav-btn").click(function(){
+    $('.market-options').hide(300);
 
     var attr = $(this).attr('data-li');
 
@@ -12,6 +13,8 @@ $(document).ready(function(){
   });
 
   $(document).on('click',  '.pagination-button', function(){
+    $('.market-options').hide(300);
+
     const pagenumber = $(this).attr('page-no');
     var activetype = $('.nav-btn.active').attr('data-li');
     var currentPage = $('.pagination-button.active').attr('page-no');
@@ -31,6 +34,9 @@ $(document).ready(function(){
 
   $('.market-options').click(function(){
     $('.market-options').hide(300);
+
+    // remove the empty child elements
+    $('.empty-child').remove();
 
     const attr = $(this).attr('sort');
 
@@ -71,6 +77,13 @@ $(document).ready(function(){
         return (contentA > contentB) ? -1 : (contentA < contentB) ? 1 : 0;
       }).appendTo('.items');
     }
+
+    // append the empty child elements again
+    $('.items').append(`
+      <article class="empty-child"></article>
+      <article class="empty-child"></article>
+      <article class="empty-child"></article>
+    `);
   })
 });
 

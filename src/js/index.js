@@ -30,6 +30,12 @@ $(function(){
       `)
     });
 
+    $items.append(`
+      <article class="empty-child"></article>
+      <article class="empty-child"></article>
+      <article class="empty-child"></article>
+    `);
+
     // type is which type to show, action could be none, next, prev, or a page number
     function paginate(type, action, currentPage){
 
