@@ -16,8 +16,8 @@ $(function(){
             <div class="overlay">
               <div class="overlay-text">
               <p> ${item.description} </p>
-              <p> To buy: m!buyitem ${item.id} </p>
-              <p> To equip: m!equipitem ${item.id} </p>
+              <p> To buy: m!buy ${item.id} </p>
+              <p> To equip: m!equip ${item.id} </p>
               </div>
             </div>
           </div>
