@@ -4,7 +4,7 @@ $(function(){
 
   var $items = $('#item-list');
 
-  $.getJSON('https://raw.githubusercontent.com/maisans-maid/Mai/dev/assets/json/market.json', function(data, status){
+  $.getJSON('https://raw.githubusercontent.com/maisans-maid/Mai/master/assets/json/market.json', function(data, status){
 
     $.each(data, function(_, item){
       $items.append(`
