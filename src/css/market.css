@@ -256,7 +256,7 @@ img{
 
 
 .market-menu {
-  display: none;
+  display: hidden;
   position: fixed;
   top: 170px;
   border-radius: 10px;
